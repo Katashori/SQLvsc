@@ -1,0 +1,93 @@
+﻿<nav>
+    <h1 class="display-2" style="margin: 10px">Navigation</h1>
+    <a type="button" class="buttonnav" href="~/repo/manage">Manage</a>
+    <a type="button" class="buttonnav" href="~/repo">Compare</a>
+
+
+</nav>
+<main>
+    <div id="jstree">
+    </div>
+    @using (Html.BeginForm("Index", "Repo", FormMethod.Post))
+    {
+        <input type="hidden" name="selectedItems" id="selectedItems" />
+        <input type="submit" value="Submit" />
+        //@Html.Raw(ViewBag.Json)
+    }
+    @section scripts{
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+        <script type="text/javascript">
+        $(function () {
+            $('#jstree').on('changed.jstree', function (e, data) {
+                var i, j;
+                var postedItems = [];
+                for(i = 0, j = data.selected.length; i < j; i++) {
+
+                    //Fetch the Id.
+                    var id = data.selected[i];
+
+                    //Remove the ParentId.
+                    if(id.indexOf('-') != -1){
+                        id = id.split("-")[1];
+                    }
+
+                    //Add the Node to the JSON Array.
+                    postedItems.push({
+                        text: data.instance.get_node(data.selected[i]).text,
+                        id: id,
+                        parent: data.node.parents[0]
+                    });
+                }
+
+                //Serialize the JSON Array and save in HiddenField.
+                $('#selectedItems').val(JSON.stringify(postedItems));
+            }).jstree({
+                "core": {
+                    "themes": {
+                        "variant": "large"
+                    },
+                    "data": @Html.Raw(ViewBag.Json)
+                    },
+                "checkbox": {
+                    "keep_selected_style": false
+                },
+                "contextmenu":{         
+                    "items": function($node) {
+                        var tree = $("#tree").jstree(true);
+                        return {
+                            "Create": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Create",
+                                "action": function (obj) { 
+                                    $node = tree.create_node($node);
+                                    tree.edit($node);
+                                }
+                            },
+                            "Rename": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Rename",
+                                "action": function (obj) { 
+                                    tree.edit($node);
+                                }
+                            },                         
+                            "Remove": {
+                                "separator_before": false,
+                                "separator_after": false,
+                                "label": "Remove",
+                                "action": function (obj) { 
+                                    tree.delete_node($node);
+                                }
+                            }
+                        };
+                    }
+                },
+                "plugins": ["wholerow", "contextmenu", "state"],
+            });
+        });
+        </script>
+    }
+</main>

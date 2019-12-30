@@ -1,0 +1,94 @@
+﻿@model IEnumerable<SQLvcs.Models.Client>
+<h3>Client</h3>
+@if (Model.Count() > 0)
+{
+<select id="ClientId" name="ClientName">
+@foreach (var item in Model)
+{
+<option value="@item.ClientId">@item.ClientName</option>
+}
+</select>
+
+<!--Кнопка редактирования Client-->
+<button id="client-edit-button">Edit</button>
+<!--Секция от всплывающего окна при нажатии на Edit-->
+<div class="popup-call" id="client-edit-popup">
+    <div class="popup-form">
+        @using (Html.BeginForm("Edit", "Clients", FormMethod.Post, null))
+        {
+            <!--спрятанное поле формы для передачи ClientId-->
+            <input type="hidden" name="ClientId" value="none" id="ClientEditId" />
+            <input type="text" name="ClientName" id="ClientEditName" />
+            <input type="submit" value="Save" />
+            <input type="button" value="Cancel" id="client-edit-cancel" />
+        }
+        <script id="client-edit-rendered-js">
+            $(document).ready(function () {
+                $('#client-edit-button').on('click', function () {
+                    var id = $("#ClientId").val();
+                    var name = $("#ClientId option:selected").text();
+                    $('#client-edit-popup').toggleClass('popup-call-show');
+                    //Подстановка значения ClientId из первого селекта в спрятанное поле формы.
+                    $("#ClientEditId").val(id);
+                    $("#ClientEditName").val(name);
+                });
+                //Обработка нажатия No в форме
+                $('#client-edit-cancel').on('click', function () {
+                    $('#client-edit-popup').toggleClass('popup-call-show');
+                });
+            });
+        </script>
+    </div>
+</div>
+<!--Конец секции-->
+
+<!--Кнопка удаления Client-->
+<button id="client-delete-button">Delete</button>
+<!--Секция от всплывающего окна при нажатии на Delete-->
+<div class="popup-call" id="client-delete-popup">
+    <div class="popup-form">
+        @using (Html.BeginForm("Delete", "Clients", FormMethod.Post, null))
+        {
+            <!--спрятанное поле формы для передачи ClientId-->
+            <input type="hidden" name="ClientId" value="none" id="ClientDeleteId" />
+            <qdel>Are you sure?</qdel>
+            <input type="submit" value="Yes" />
+            <input type="button" value="No" id="client-delete-cancel" />
+        }
+        <script id="client-delete-rendered-js">
+            $(document).ready(function () {
+                $('#client-delete-button').on('click', function () {
+                    var e = $("#ClientId").val();
+                    $('#client-delete-popup').toggleClass('popup-call-show');
+                    //Подстановка значения ClientId из первого селекта в спрятанное поле формы.
+                    $("#ClientDeleteId").val(e);
+                });
+                $('#client-delete-cancel').on('click', function () {
+                    $('#client-delete-popup').toggleClass('popup-call-show');
+                });
+            });
+        </script>
+    </div>
+</div>
+<!--Конец секции-->
+}
+<!--Кнопка добавления Client-->
+<button id="client-add-button">Add</button>
+<!--Секция от всплывающего окна при нажатии на Add-->
+<div class="popup-call" id="client-add-popup">
+    <div class="popup-form">
+        @using (Html.BeginForm("Create", "Clients", FormMethod.Post, null))
+        {
+            <input type="text" name="ClientName" placeholder='Client Name e.g. ООО "Вектор"' />
+            <input type="submit" value="Add" />
+        }
+        <script id="client-add-rendered-js">
+            $(document).ready(function () {
+                $('#client-add-button').on('click', function () {
+                    $('#client-add-popup').toggleClass('popup-call-show');
+                });
+            });
+        </script>
+    </div>
+</div>
+<!--Конец секции-->

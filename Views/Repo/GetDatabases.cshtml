@@ -1,0 +1,103 @@
+﻿@model IEnumerable<SQLvcs.Models.Database>
+
+<h3>Database</h3>
+@if (Model.Count() > 0)
+{
+    <select id="DatabaseId" name="DatabaseName">
+        @foreach (var item in Model)
+        {
+            <option value="@item.DatabaseId">@item.DatabaseName</option>
+        }
+    </select>
+    <!--Кнопка редактирования Database-->
+    <button id="database-edit-button">Edit</button>
+    <!--Секция от всплывающего окна при нажатии на Edit-->
+    <div class="popup-call" id="database-edit-popup">
+        <div class="popup-form">
+            @using (Html.BeginForm("Edit", "Databases", FormMethod.Post, null))
+            {
+                <!--спрятанное поле формы для передачи DatabaseId-->
+                <input type="hidden" name="DatabaseId" value="none" id="database-edit-database-id" />
+                <input type="text" name="DatabaseName" id="database-edit-database-name" />
+                <input type="hidden" name="InstanceId" value="none" id="database-edit-instance-id" />
+                <input type="submit" value="Save" />
+                <input type="button" value="Cancel" id="database-edit-cancel" />
+            }
+            <script id="instance-edit-rendered-js">
+                $(document).ready(function () {
+                    $('#database-edit-button').on('click', function () {
+                        var databaseid = $("#DatabaseId option:selected").val();
+                        var databasename = $("#DatabaseId option:selected").text();
+                        var instanceid = $("#InstanceId option:selected").val();
+                        $('#database-edit-popup').toggleClass('popup-call-show');
+                        //Подстановка значения DatabaseId из первого селекта в спрятанное поле формы.
+                        $("#database-edit-database-id").val(databaseid);
+                        $("#database-edit-database-name").val(databasename);
+                        $("#database-edit-instance-id").val(instanceid);
+                    });
+                    $('#database-edit-cancel').on('click', function () {
+                        $('#database-edit-popup').toggleClass('popup-call-show');
+                    });
+                });
+            </script>
+        </div>
+
+    </div>
+    <!--Конец секции-->
+
+    <!--Кнопка удаления Database-->
+    <button id="database-delete-button">Delete</button>
+    <!--Секция от всплывающего окна при нажатии на Delete-->
+    <div class="popup-call" id="database-delete-popup">
+        <div class="popup-form">
+            @using (Html.BeginForm("Delete", "Databases", FormMethod.Post, null))
+            {
+                <!--спрятанное поле формы для передачи DatabaseId-->
+                <input type="hidden" name="DatabaseId" value="none" id="database-delete-instance-id" />
+                <qdel>Are you sure?</qdel>
+                <input type="submit" value="Yes" />
+                <input type="button" value="No" id="database-delete-cancel" />
+            }
+            <script id="database-delete-rendered-js">
+                $(document).ready(function () {
+                    $('#database-delete-button').on('click', function () {
+                        var databaseid = $("#DatabaseId option:selected").val();
+                        $('#database-delete-popup').toggleClass('popup-call-show');
+                        //Подстановка значения DatabaseId из первого селекта в спрятанное поле формы.
+                        $("#database-delete-instance-id").val(databaseid);
+                    });
+                    $('#database-delete-cancel').on('click', function () {
+                        $('#database-delete-popup').toggleClass('popup-call-show');
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    <!--Конец секции-->
+}
+<!--Кнопка добавления Database-->
+<button id="database-add-button">Add</button>
+<div class="popup-call" id="database-add-popup">
+    <div class="popup-form">
+        <!--Форма-->
+        @using (Html.BeginForm("Create", "Databases", FormMethod.Post, null))
+        {
+            <!--спрятанное поле формы для передачи InstanceId-->
+            <input type="hidden" name="InstanceId" value="none" id="database-add-instance-id" />
+            <input type="text" name="DatabaseName" placeholder='Insert Database Name' />
+            <input type="submit" value="Add" />
+        }
+        <!--Скрипт для появления и скрытия формы-->
+        <script id="database-add-rendered-js">
+            $(document).ready(function () {
+                $('#database-add-button').on('click', function () {
+                    var instanceid = $("#InstanceId").val();
+                    $('#database-add-popup').toggleClass('popup-call-show');
+                    //Подстановка значения InstanceId из первого селекта в спрятанное поле формы.
+                    $("#database-add-instance-id").val(instanceid);
+                });
+            });
+        </script>
+    </div>
+</div>
+<!--Конец секции-->

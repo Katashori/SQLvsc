@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Browse";
+}
+
+    <asp:TreeView ID="TreeView1" runat="server">
+        <Nodes>
+            <asp:TreeNode Text="Products">
+                <asp:TreeNode Text="Hardware" />
+                <asp:TreeNode Text="Software" />
+            </asp:TreeNode>
+            <asp:TreeNode Text="Services" />
+        </Nodes>
+    </asp:TreeView>

@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <section id="page">
+        <header>
+            Header
+            <a class="button" href="~/">Home</a>
+            <a class="button" href="~/repo">Repo</a>
+            <a class="button" href="~/admin">Admin</a>
+        </header>
+        @RenderBody()
+        <footer>Footer</footer>
+    </section>
+    @RenderSection("scripts", false)
+</body>
+</html>
+

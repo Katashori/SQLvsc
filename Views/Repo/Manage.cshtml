@@ -1,0 +1,124 @@
+﻿<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+<nav>
+    <h1 class="display-2" style="margin: 10px">Navigation</h1>
+    <a type="button" class="buttonnav" href="~/repo/manage">Manage</a>
+    <a type="button" class="buttonnav" href="~/repo">Compare</a>
+</nav>
+<main>
+    <div id="Clients"></div>
+    <div id="Projects"></div>
+    <div id="Instances"></div>
+    <div id="Databases"></div>
+    <div id="Dacpacs"></div>
+    @section scripts{
+        <script type="text/javascript">
+            function Get_Dacpacs(id) {
+                //выполняем загрузку, только если есть id базы данных
+                if (id != null) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetDacpacs")/' + id,
+                        success: function (GetDacpacs) {
+                            // заменяем содержимое присланным частичным представлением
+                            $('#Dacpacs').html(GetDacpacs);
+                        }
+                    });
+                }
+                else {
+                    //если родительский селект пустой - опустошаем div
+                    $('#Dacpacs').html(null);
+                }
+            };
+            function Get_Databases(id) {
+                //выполняем загрузку, только если есть id инстанса
+                if (id != null) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetDatabases")/' + id,
+                        success: function (GetDatabases) {
+                            // заменяем содержимое присланным частичным представлением
+                            $('#Databases').html(GetDatabases);
+                        },
+                        complete: function () {
+                            Get_Dacpacs($('#DatabaseId').val());
+                        }
+                    });
+                }
+                else {
+                    //если родительский селект пустой - опустошаем div
+                    $('#Instances').html(null);
+                }
+            };
+            function Get_Instances(id) {
+                //выполняем загрузку, только если есть id проекта
+                if (id != null) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetInstances")/' + id,
+                        success: function (GetInstances) {
+                            // заменяем содержимое присланным частичным представлением
+                            $('#Instances').html(GetInstances);
+                        },
+                        complete: function () {
+                            Get_Databases($('#InstanceId').val());
+                        }
+                    });
+                }
+                else {
+                    //если родительский селект пустой - опустошаем div
+                    $('#Instances').html(null);
+                }
+            };
+            function Get_Projects(id) {
+                //выполняем загрузку, только если есть id клиента
+                if (id != null) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetProjects")/' + id,
+                        success: function (GetProjects) {
+                            // заменяем содержимое присланным частичным представлением
+                            $('#Projects').html(GetProjects);
+                        },
+                        complete: function () {
+                            Get_Instances($('#ProjectId').val());
+                        }
+                    });
+                }
+                else {
+                    //если родительский селект пустой - опустошаем div
+                    $('#Projects').html(null);
+                }
+            };
+            function Get_Clients() {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetClients")/',
+                    success: function (GetClients) {
+                        // заменяем содержимое присланным частичным представлением
+                        $('#Clients').html(GetClients);
+                    },
+                    //по завершении загрузки подгружаем проекты
+                    complete: function () {
+                         Get_Projects($('#ClientId').val());
+                    }
+                });
+            };
+            //инициация цепочки
+            Get_Clients();
+            $('#Clients').on('change', '#ClientId', function () {
+                Get_Projects($(this).val())
+            });
+            $('#Projects').on('change', '#ProjectId', function () {
+                Get_Instances($(this).val())
+            });
+            $('#Instances').on('change', '#InstanceId', function () {
+                Get_Databases($(this).val())
+            });
+            $('#Databases').on('change', '#DatabaseId', function () {
+                Get_Dacpacs($(this).val())
+            });
+        </script>
+    }
+</main>
+

@@ -1,0 +1,103 @@
+﻿@model IEnumerable<SQLvcs.Models.Instance>
+
+<h3>Instance</h3>
+@if (Model.Count() > 0)
+ {
+<select id="InstanceId" name="InstanceName">
+    @foreach (var item in Model)
+    {
+    <option value="@item.InstanceId">@item.InstanceName</option>
+    }
+</select>
+<!--Кнопка редактирования Instance-->
+<button id="instance-edit-button">Edit</button>
+<!--Секция от всплывающего окна при нажатии на Edit-->
+<div class="popup-call" id="instance-edit-popup">
+    <div class="popup-form">
+       @using (Html.BeginForm("Edit", "Instances", FormMethod.Post, null))
+        {
+            <!--спрятанное поле формы для передачи InstanceId-->
+            <input type="hidden" name="InstanceId" value="none" id="instance-edit-instance-id" />
+            <input type="text" name="InstanceName" id="instance-edit-instance-name" />
+            <input type="hidden" name="ProjectId" value="none" id="instance-edit-project-id" />
+            <input type="submit" value="Save" />
+            <input type="button" value="Cancel" id="instance-edit-cancel" />
+        }
+        <script id="project-edit-rendered-js">
+            $(document).ready(function () {
+                $('#instance-edit-button').on('click', function () {
+                    var instanceid = $("#InstanceId option:selected").val();
+                    var instancename = $("#InstanceId option:selected").text();
+                    var projectid = $("#ProjectId option:selected").val();
+                    $('#instance-edit-popup').toggleClass('popup-call-show');
+                    //Подстановка значения InstanceId из первого селекта в спрятанное поле формы.
+                    $("#instance-edit-instance-id").val(instanceid);
+                    $("#instance-edit-instance-name").val(instancename);
+                    $("#instance-edit-project-id").val(projectid);
+                });
+                $('#instance-edit-cancel').on('click', function () {
+                    $('#instance-edit-popup').toggleClass('popup-call-show');
+                });
+            });
+        </script>
+    </div>
+
+</div>
+<!--Конец секции-->
+
+<!--Кнопка удаления Instance-->
+<button id="instance-delete-button">Delete</button>
+<!--Секция от всплывающего окна при нажатии на Delete-->
+<div class="popup-call" id="instance-delete-popup">
+    <div class="popup-form">
+        @using (Html.BeginForm("Delete", "Instances", FormMethod.Post, null))
+        {
+            <!--спрятанное поле формы для передачи InstanceId-->
+            <input type="hidden" name="InstanceId" value="none" id="instance-delete-project-id" />
+            <qdel>Are you sure?</qdel>
+            <input type="submit" value="Yes" />
+            <input type="button" value="No" id="instance-delete-cancel" />
+        }
+        <script id="instance-delete-rendered-js">
+            $(document).ready(function () {
+                $('#instance-delete-button').on('click', function () {
+                    var instanceid = $("#InstanceId option:selected").val();
+                    $('#instance-delete-popup').toggleClass('popup-call-show');
+                    //Подстановка значения InstanceId из первого селекта в спрятанное поле формы.
+                    $("#instance-delete-project-id").val(instanceid);
+                });
+                $('#instance-delete-cancel').on('click', function () {
+                    $('#instance-delete-popup').toggleClass('popup-call-show');
+                });
+            });
+        </script>
+    </div>
+</div>
+<!--Конец секции-->
+ }
+<!--Кнопка добавления Instance-->
+<button id="instance-add-button">Add</button>
+<div class="popup-call" id="instance-add-popup">
+    <div class="popup-form">
+        <!--Форма-->
+        @using (Html.BeginForm("Create", "Instances", FormMethod.Post, null))
+        {
+            <!--спрятанное поле формы для передачи ProjectId-->
+            <input type="hidden" name="ProjectId" value="none" id="instance-add-project-id" />
+            <input type="text" name="InstanceName" placeholder='Insert Instance Name' />
+            <input type="submit" value="Add" />
+        }
+        <!--Скрипт для появления и скрытия формы-->
+        <script id="instance-add-rendered-js">
+            $(document).ready(function () {
+                $('#instance-add-button').on('click', function () {
+                    var projectid = $("#ProjectId").val();
+                    $('#instance-add-popup').toggleClass('popup-call-show');
+                    //Подстановка значения ProjectId из первого селекта в спрятанное поле формы.
+                    $("#instance-add-project-id").val(projectid);
+                });
+            });
+        </script>
+    </div>
+</div>
+<!--Конец секции-->

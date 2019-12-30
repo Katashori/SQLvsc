@@ -1,0 +1,103 @@
+﻿@model IEnumerable<SQLvcs.Models.Dacpac>
+
+<h3>Dacpac</h3>
+@if (Model.Count() > 0)
+{
+    <select id="DacpacId" name="DacpacName">
+        @foreach (var item in Model)
+        {
+            <option value="@item.DacpacId">@item.DacpacName</option>
+        }
+    </select>
+    <!--Кнопка редактирования Dacpac-->
+    <button id="dacpac-edit-button">Edit</button>
+    <!--Секция от всплывающего окна при нажатии на Edit-->
+    <div class="popup-call" id="dacpac-edit-popup">
+        <div class="popup-form">
+            @using (Html.BeginForm("Edit", "Dacpacs", FormMethod.Post, null))
+            {
+                <!--спрятанное поле формы для передачи DacpacId-->
+                <input type="hidden" name="DacpacId" value="none" id="dacpac-edit-dacpac-id" />
+                <input type="text" name="DacpacName" id="dacpac-edit-dacpac-name" />
+                <input type="hidden" name="DatabaseId" value="none" id="dacpac-edit-database-id" />
+                <input type="submit" value="Save" />
+                <input type="button" value="Cancel" id="dacpac-edit-cancel" />
+            }
+            <script id="database-edit-rendered-js">
+                $(document).ready(function () {
+                    $('#dacpac-edit-button').on('click', function () {
+                        var dacpacid = $("#DacpacId option:selected").val();
+                        var dacpacname = $("#DacpacId option:selected").text();
+                        var databaseid = $("#DatabaseId option:selected").val();
+                        $('#dacpac-edit-popup').toggleClass('popup-call-show');
+                        //Подстановка значения DacpacId из первого селекта в спрятанное поле формы.
+                        $("#dacpac-edit-dacpac-id").val(dacpacid);
+                        $("#dacpac-edit-dacpac-name").val(dacpacname);
+                        $("#dacpac-edit-database-id").val(databaseid);
+                    });
+                    $('#dacpac-edit-cancel').on('click', function () {
+                        $('#dacpac-edit-popup').toggleClass('popup-call-show');
+                    });
+                });
+            </script>
+        </div>
+
+    </div>
+    <!--Конец секции-->
+
+    <!--Кнопка удаления Dacpac-->
+    <button id="dacpac-delete-button">Delete</button>
+    <!--Секция от всплывающего окна при нажатии на Delete-->
+    <div class="popup-call" id="dacpac-delete-popup">
+        <div class="popup-form">
+            @using (Html.BeginForm("Delete", "Dacpacs", FormMethod.Post, null))
+            {
+                <!--спрятанное поле формы для передачи DacpacId-->
+                <input type="hidden" name="DacpacId" value="none" id="dacpac-delete-database-id" />
+                <qdel>Are you sure?</qdel>
+                <input type="submit" value="Yes" />
+                <input type="button" value="No" id="dacpac-delete-cancel" />
+            }
+            <script id="dacpac-delete-rendered-js">
+                $(document).ready(function () {
+                    $('#dacpac-delete-button').on('click', function () {
+                        var dacpacid = $("#DacpacId option:selected").val();
+                        $('#dacpac-delete-popup').toggleClass('popup-call-show');
+                        //Подстановка значения DacpacId из первого селекта в спрятанное поле формы.
+                        $("#dacpac-delete-database-id").val(dacpacid);
+                    });
+                    $('#dacpac-delete-cancel').on('click', function () {
+                        $('#dacpac-delete-popup').toggleClass('popup-call-show');
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    <!--Конец секции-->
+}
+<!--Кнопка добавления Dacpac-->
+<button id="dacpac-add-button">Add</button>
+<div class="popup-call" id="dacpac-add-popup">
+    <div class="popup-form">
+        <!--Форма-->
+        @using (Html.BeginForm("Create", "Dacpacs", FormMethod.Post, null))
+        {
+            <!--спрятанное поле формы для передачи DatabaseId-->
+            <input type="hidden" name="DatabaseId" value="none" id="dacpac-add-database-id" />
+            <input type="text" name="DacpacName" placeholder='Insert Dacpac Name' />
+            <input type="submit" value="Add" />
+        }
+        <!--Скрипт для появления и скрытия формы-->
+        <script id="dacpac-add-rendered-js">
+            $(document).ready(function () {
+                $('#dacpac-add-button').on('click', function () {
+                    var databaseid = $("#DatabaseId").val();
+                    $('#dacpac-add-popup').toggleClass('popup-call-show');
+                    //Подстановка значения DatabaseId из первого селекта в спрятанное поле формы.
+                    $("#dacpac-add-database-id").val(databaseid);
+                });
+            });
+        </script>
+    </div>
+</div>
+<!--Конец секции-->
